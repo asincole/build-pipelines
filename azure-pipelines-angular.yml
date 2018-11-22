@@ -11,7 +11,7 @@ steps:
 - script: |
     npm install
     npm install -g @angular/cli
-    ng build --prod --build-optimizer
+    ng build --prod 
 
 # Zip build folder up to prepare for azure web app deployment
 - task: ArchiveFiles@2
