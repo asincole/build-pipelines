@@ -1,0 +1,30 @@
+# Build Ionic PWAs using Azure Pipelines
+pool:
+  vmImage: 'Ubuntu 16.04'
+  
+steps:
+- task: NodeTool@0
+# Specify the ode version you need for your app here
+  inputs:
+    versionSpec: '8.x'
+  
+- script: |
+    npm install
+    npm install -g ionic
+    ionic build --prod --service-worker
+
+# Zip build folder up to prepare for azure web app deployment
+- task: ArchiveFiles@2
+  displayName: 'Archive files'
+  inputs:
+    rootFolderOrFile: www
+    includeRootFolder: false
+
+#  Deploy archived folder
+- task: AzureRmWebAppDeployment@3
+  displayName: 'Azure WebApp Deployment'
+  inputs:
+    azureSubscription: '<Azure service connections>'
+    WebAppName: '<Name of web app>'
+    Package: $(System.ArtifactsDirectory)/**/*.zip
+
