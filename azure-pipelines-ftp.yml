@@ -1,0 +1,34 @@
+# Build Angular apps using Azure Pipelines
+pool:
+  vmImage: 'Ubuntu 16.04'
+  
+steps:
+- task: NodeTool@0
+# Specify the ode version you need for your app here
+  inputs:
+    versionSpec: '10.x'
+
+
+- script: |
+    npm install
+    npm install -g @angular/cli
+    ng build --prod 
+    
+    
+
+- task: FtpUpload@1
+  displayName: 'Upload to host'
+  inputs:
+    credentialsOption: inputs
+
+    serverUrl: ftp://ftp.example.com
+
+    username: $(ftpUsername)
+
+    password: $(ftpPassword)
+
+    rootDirectory: dist/asincoledotcom
+
+    remoteDirectory: /
+
+    clean: true
